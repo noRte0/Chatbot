@@ -2,11 +2,11 @@ version: '3.8'
 services:
   postgres:
     image: postgres:latest
-    container_name: postgres
+    container_name: your
     environment:
-      POSTGRES_USER: myfinflow
-      POSTGRES_PASSWORD: finflowpassword
-      POSTGRES_DB: finflowdb
+      POSTGRES_USER: your
+      POSTGRES_PASSWORD: your
+      POSTGRES_DB: your
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -15,10 +15,10 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: pgadmin
+    container_name: your
     environment:
-      PGADMIN_DEFAULT_EMAIL: finflow@admin.com
-      PGADMIN_DEFAULT_PASSWORD: finflowadmin
+      PGADMIN_DEFAULT_EMAIL: your
+      PGADMIN_DEFAULT_PASSWORD: your
     ports:
       - "5050:80"
     depends_on:
@@ -28,4 +28,3 @@ services:
 volumes:
   postgres_data:
 
-  # name:finflow
