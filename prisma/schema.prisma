@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(uuid()) @db.Uuid
+  name          String?       @db.VarChar(255)
+  email         String?       @db.VarChar(255) @unique
+  emailVerified DateTime?
+  image         String?
+  role          AuthRole      @default(USER)
+
+  accounts      Account[] 
+  transactions  Transaction[] 
+  investments   Investment[]
+}
+
+model Account {
+  id                  String   @id @default(uuid()) @db.Uuid
+  userId              String   @db.Uuid
+  type                String   @db.VarChar(255)
+  provider            String   @db.VarChar(255)
+  providerAccountId   String   @db.VarChar(255)
+  refresh_token       String?
+  access_token        String?
+  expires_at          BigInt?
+  id_token            String?
+  scope               String?
+  session_state       String?
+  token_type          String?
+
+  user                User     @relation(fields: [userId], references: [id])
+}
+
+model Transaction {
+  id           String      @id @default(uuid()) @db.Uuid
+  userId       String      @db.Uuid
+  type         TransactionType
+  amount       Float
+  category     String?     @db.VarChar(255) 
+  note         String?     @db.Text
+  balance      Float
+  createdAt    DateTime    @default(now())
+
+  user         User        @relation(fields: [userId], references: [id])
+
+  @@index([userId]) 
+}
+
+model VerificationToken {
+  identifier String   
+  token      String   
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Investment {
+  id                      String     @id @default(uuid()) @db.Uuid
+  userId                  String     @db.Uuid
+  type                    InvestmentType
+  stockName               String     @db.VarChar(255)
+  purchaseDate            DateTime 
+  currentMarketPrice      Float     
+  averagePurchasePrice    Float     
+  sharesAcquired          Float     
+  feesCommissions         Float     
+  investmentAmount        Float      
+  unit                    String     @db.VarChar(50) 
+  createdAt               DateTime   @default(now()) 
+
+  user                    User       @relation(fields: [userId], references: [id])
+
+  @@index([userId]) 
+}
+
+enum InvestmentType {
+  DCA
+  STOCK
+}
+
+enum AuthRole {
+  USER
+  ADMIN
+}
+
+enum TransactionType {
+  INCOME
+  OUTCOME
+}
